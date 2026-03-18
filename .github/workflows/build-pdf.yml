@@ -1,0 +1,23 @@
+name: Build PDF
+on:
+  push:
+    branches: [main]
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compile LaTeX
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: UF_Proposal.tex
+      - name: Commit PDF
+        run: |
+          mv UF_Proposal.pdf Price_Research_Statement.pdf
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git add Price_Research_Statement.pdf
+          git diff --cached --quiet || git commit -m "Auto-build PDF"
+          git push
